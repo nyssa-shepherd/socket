@@ -59,6 +59,10 @@
         $('#messages').append($('<li>').text(message));
       })
 
+      socket.on('connect message', message => {
+        $('#messages').append($('<li>').text(message));
+      })
+
       </script>
   </body>
 </html>

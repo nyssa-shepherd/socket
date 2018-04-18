@@ -25,11 +25,13 @@ io.on('connection', function(socket){
     socket.on('done typing', user => {
       io.emit('done typing', user);
     });
+
+    socket.on('disconnect', () => {
+      io.emit('disconnect message', 'The user disconnected');
+    });
   });
 
-  socket.on('disconnect', () => {
-    io.emit('disconnect message', 'The user disconnected');
-  });
+
 
 });
 

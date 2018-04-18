@@ -16,7 +16,9 @@
   </head>
   <body>
     <ul id="messages"></ul>
-    <input type:"text" placeholder="nickname" id='uinput'/><button id='uname'>submit</button>
+    <input type:"text" placeholder="username" id='uinput'/><button id='uname'>submit</button>
+    <input type:"text" placeholder="nickname" id='nick'/><button id='nname'>submit</button>
+
     <p id='user-typing'></p>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
@@ -33,7 +35,7 @@
       });
 
       $('form').on('keydown', () => {
-        const user = $('#uinput').val() === '' ? 'User' : $('#uinput').val();
+        const user = $('#nick').val() ? $('#nick').val() : $('#uinput').val() || '';
         if($('#m').val() !== '') {
           return socket.emit('typing', user);
         } 

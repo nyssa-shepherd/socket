@@ -11,27 +11,58 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      #uname { margin-left: 10px; height: 20px; width: 80px; margin-top: 5px; }
     </style>
   </head>
   <body>
     <ul id="messages"></ul>
+    <input type:"text" placeholder="username" id='uinput'/><button id='uname'>submit</button>
+    <input type:"text" placeholder="nickname" id='nick'/><button id='nname'>submit</button>
+
+    <p id='user-typing'></p>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        $(function () {
-          var socket = io();
-          $('form').submit(function(){
-            socket.emit('chat message', $('#m').val());
-            $('#m').val('');
-            return false;
-          });
-          socket.on('chat message', function(msg){
-            $('#messages').append($('<li>').text(msg));
-          });
-        });
+      var socket = io();
+
+      $('form').submit(() => {
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+
+      $('form').on('keydown', () => {
+        const user = $('#nick').val() ? $('#nick').val() : $('#uinput').val() || '';
+        if($('#m').val() !== '') {
+          return socket.emit('typing', user);
+        } 
+        socket.emit('done typing', user);        
+      });
+
+      socket.on('chat message', (msg) => {
+        $('#messages').append($('<li>').text(msg));
+      });
+
+      socket.on('typing', user => {
+        console.log('typeing')
+        $('#user-typing').text(`${user} is typing...`);
+      });
+
+      socket.on('done typing', () => {
+        $('#user-typing').text('');
+      });
+
+      socket.on('disconnect message', message => {
+        $('#messages').append($('<li>').text(message));
+      })
+
+      socket.on('connect message', message => {
+        $('#messages').append($('<li>').text(message));
+      })
+
       </script>
   </body>
 </html>
